@@ -1,0 +1,47 @@
+﻿@typeparam TItem
+@if (List == null)
+{
+    @if (NullTemplate != null)
+    {
+        @NullTemplate
+    }
+    else
+    {
+        @*<p style="color:red">This is loading</p>*@
+        @*<div class="loader"></div>*@
+
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    }
+}
+else if (List.Count == 0)
+{
+    @if (EmptyTemplate != null)
+    {
+        @EmptyTemplate
+    }
+    else
+    {
+        @*<p style="color:red">This is loading</p>*@
+        <text>Ther are no item to show...</text>
+    }
+}
+else
+{
+    @OtherTemplate
+    foreach (var element in List)
+    {
+        @ElementTemplate(element)
+    }
+}
+
+
+
+@code {
+    [Parameter] public RenderFragment NullTemplate { get; set; }
+    [Parameter] public RenderFragment EmptyTemplate { get; set; }
+    [Parameter] public RenderFragment OtherTemplate { get; set; }
+    [Parameter] public List<TItem> List { get; set; }
+    [Parameter] public RenderFragment<TItem> ElementTemplate { get; set; }
+}

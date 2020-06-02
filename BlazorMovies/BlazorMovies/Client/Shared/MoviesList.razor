@@ -1,0 +1,60 @@
+﻿@inject IJSRuntime js
+@if (Movies != null)
+{
+    <button @onclick="AddNewMovie">AddNewMovie</button>
+}
+<GenericList List="Movies">
+    @*<EmptyTemplate>
+
+        </EmptyTemplate>
+        <NullTemplate>
+
+        </NullTemplate>*@
+    <OtherTemplate>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input pointer" type="checkbox" @bind="displayButton" id="displaybutton" />
+            <label class="form-check-label pointer" for="displaybutton">Display Delete Button</label>
+        </div>
+    </OtherTemplate>
+    <ElementTemplate Context="movie">
+        <IndividualMovie Movie="movie" DeleteMovie="DeleteMovie" DisplayButton="displayButton" />
+    </ElementTemplate>
+
+</GenericList>
+<Confirmation @ref="confirmation" onCancel="onCancel" onConfirm="onCofirm">
+    <div>Do you wish to delete ((<b>@movieToBeDeleted.Title</b>))?</div>
+</Confirmation>
+
+@code {
+    Confirmation confirmation;
+    [Parameter] public List<Movie> Movies { get; set; }
+    bool displayButton = true;
+    Movie movieToBeDeleted;
+    private async Task DeleteMovie(Movie movie)
+    {
+        movieToBeDeleted = movie;
+        confirmation.Show();
+        //var confirm = await js.InvokeAsync<bool>("confirm", $"Are you shure delete movie {movie.Title} ?");
+        //await js.MyFunction("example message");
+        //var confirm = await js.Confirm($"Are you shure delete movie {movie.Title} ?");
+        //if (confirm)
+        //{
+        //    Movies.Remove(movie);
+        //}
+    }
+    void onCofirm()
+    {
+        Movies.Remove(movieToBeDeleted);
+        confirmation.Hide();
+        movieToBeDeleted = null;
+    }
+    void onCancel()
+    {
+        confirmation.Hide();
+        movieToBeDeleted = null;
+    }
+    private void AddNewMovie()
+    {
+        Movies.Add(new Movie() { Title = "Sample Video", ReleaseDate = DateTime.Today });
+    }
+}
