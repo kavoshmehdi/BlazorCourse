@@ -1,0 +1,21 @@
+﻿<StackLayout>
+    <StackLayout Orientation="StackOrientation.Horizontal">
+        <Entry @bind-Text="newText" HorizontalOptions="LayoutOptions.FillAndExpand"/>
+        <Button Text="Add" OnClick="@AddItem" />
+    </StackLayout>
+    @foreach(var item in items)
+    {
+        <TodoDisplay Item="item" />
+    }
+</StackLayout>
+
+@code {
+    List<TodoItem> items = new List<TodoItem>();
+    string newText;
+    void AddItem()
+    {
+        if(newText!=null)
+        items.Add(new TodoItem { Text = newText });
+        newText = null;
+    }
+}

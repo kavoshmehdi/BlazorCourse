@@ -1,0 +1,25 @@
+﻿@*<ContentPage>
+    <StackLayout Margin="new Thickness(20)">
+
+        <Label Text="درود ملینا جونم"
+               FontSize="40" />
+
+        <Counter />
+
+    </StackLayout>
+</ContentPage>*@
+<TabbedPage>
+    <ContentPage Title="Todo">
+        <StackLayout>
+            <Label FontSize="20" TextColor="Color.Crimson" Text="Todo Items" HorizontalTextAlignment="TextAlignment.Center"></Label>
+            @* put todo app here*@
+            <TodoList/>
+        </StackLayout>
+    </ContentPage>
+    <ContentPage Title="Counter">
+        <Counter/>
+    </ContentPage>
+    <ContentPage Title="About">
+        <About/>
+    </ContentPage>
+</TabbedPage>

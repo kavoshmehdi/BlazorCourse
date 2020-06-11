@@ -1,0 +1,26 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+*, html, body {
+    /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    /*IRANSansWeb,IRANSansWeb_Black,IRANSansWeb_Bold,IRANSansWeb_Light,IRANSansWeb_Medium,IRANSansWeb_UltraLight,
+    iranyekanwebbold, iranyekanweblight, iranyekanwebregular,
+    Parastoo, Sahel, Samim, Shabnam, Tanha, Vazir,*/
+    font-family: IRANSansWeb;
+    margin: 0px;
+    padding: 0px;
+}
+
+.main {
+    padding: 70px 5px 5px 0px;
+}
+
+.mdc-button, .mdc-top-app-bar__title, .mat-tooltip, .mdc-floating-label,
+.mdc-select__selected-text,.mat-text-field-input{
+    font-family: inherit;
+    letter-spacing: normal;
+    font-size:small;
+}
+.mat-text-field-with-actions-container .mat-text-field-actions-container {
+    right: inherit;
+    left: 3px;
+}

@@ -1,0 +1,130 @@
+﻿@*@using Microsoft.AspNetCore.Components*@
+@page "/"
+@*    <MatAppBarContainer>*@
+<MatAppBar Fixed="true">
+    <MatAppBarRow>
+        <MatAppBarSection>
+            <MatIconButton Icon="menu"></MatIconButton>
+            <MatAppBarTitle>این سامانه برای تست طراحی شده است</MatAppBarTitle>
+        </MatAppBarSection>
+        <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+            <MatIconButton Icon="favorite" ></MatIconButton>
+        </MatAppBarSection>
+    </MatAppBarRow>
+</MatAppBar>
+<div class="main">
+    <p>این متن برای تست است</p>
+    <MatButton Raised="true" Icon="favorite" Tooltip="کمک به من">این کلید برای تست است</MatButton>
+
+    <MatTooltip Tooltip="کمک به من">
+        <MatButton RefBack="@context">Right</MatButton>
+    </MatTooltip>
+
+    <MatList>
+        <MatListItem>
+            عنوان شماره 1 برای تست
+        </MatListItem>
+        <MatListItem Href="#">
+            عنوان شماره 2 برای تست
+        </MatListItem>
+        <MatListItem Disabled="true" Href="#">
+            عنوان شماره 3 برای تست
+        </MatListItem>
+    </MatList>
+
+    <MatAutocompleteList Items="@options" TItem="string" Label="یک مورد انتخاب کنید"></MatAutocompleteList>
+
+    <div>
+        <MatCheckbox @bind-Value="@checked3" Indeterminate="true">چک باکس</MatCheckbox>
+        <MatButton OnClick="@(_ =>
+                                 {
+                                     checked3 = null;
+                                 })">پاک کردن</MatButton>
+    </div>
+
+    <MatNumericUpDownField Label="با ایکون"
+                           @bind-Value=@testingNullableDecimal3
+                           DecimalPlaces=0
+                           Icon="favorite"
+                           Minimum=null Maximum=null>
+    </MatNumericUpDownField>
+
+    <h3>نوع ماشین انتخابی: @carValue?.Name</h3>
+    <MatRadioGroup @bind-Value="@carValue" Items="@carOptions">
+        <ItemTemplate>
+            <div>
+                <MatRadioButton Value="@context">@context.Name : @context.Price</MatRadioButton>
+            </div>
+        </ItemTemplate>
+    </MatRadioGroup>
+
+
+    <MatSelect Label="گروه غذایی را انتخاب کنبد" @bind-Value="value1">
+        <MatOptionString></MatOptionString>
+        <MatOptionString Value="غلات">نان و برنج و پاستا</MatOptionString>
+        <MatOptionString Value="سبزی">سبزیجات</MatOptionString>
+        <MatOptionString Value="میوه">میوه</MatOptionString>
+    </MatSelect>
+    <span>@value1</span>
+
+
+    <MatTextField @bind-Value="@myStringValue" Label="استاندارد"></MatTextField>
+
+</div>
+
+@*<MatAppBarContent>
+        Content
+    </MatAppBarContent>*@
+@*  </MatAppBarContainer>*@
+
+
+@code
+        {
+
+    public void RunOnClick(MouseEventArgs e)
+    {
+        //JsRuntime.InvokeAsync<object>("window.alert", "Test");
+    }
+    string[] options = new[]
+        {
+                "یک",
+                "دو",
+                "سه"
+            };
+
+    bool? checked3 = null;
+
+    decimal? testingNullableDecimal3 = null;
+
+    public class Car
+    {
+        public string Name { get; set; }
+        public double Price { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+
+        public Car(string name, double price)
+        {
+            Name = name;
+            Price = price;
+        }
+    }
+
+    Car carValue = null;
+
+    Car[] carOptions = new[]
+    {
+                new Car("فولکس واگن گلف ", 10000),
+                new Car("فولکس واگن پاسات ", 11000),
+                new Car("فولکی واگن پولی ", 12000),
+            };
+
+
+    string value1;
+
+    string myStringValue;
+}

@@ -1,0 +1,33 @@
+﻿<Frame CornerRadius="10" BackgroundColor="Color.LightBlue">
+
+    <StackLayout Orientation="StackOrientation.Vertical" HorizontalOptions="LayoutOptions.Center">
+
+        <Button Text="Increment" OnClick="@IncrementCount" />
+
+        <Label Text="@("The button was clicked " + count + " times")"
+               FontAttributes="FontAttributes.Bold"
+               VerticalTextAlignment="TextAlignment.Center" />
+
+        <Button Text="Decrement" OnClick="@DecrementCount" />
+    </StackLayout>
+
+</Frame>
+
+@code
+{
+    int count;
+
+    void IncrementCount()
+    {
+        count++;
+    }
+    void DecrementCount()
+    {
+        if (count == 0) {
+            Application.Current.MainPage.DisplayAlert("Error", "Count is already 0", "OK");
+            return;
+        }
+        count--;
+    }
+
+}
