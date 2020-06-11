@@ -1,0 +1,29 @@
+﻿@page "/register"
+@inject HttpClient http
+@inject ILoginService  loginService
+@inject NavigationManager navigationManager
+@using BlazorCRUDApp.Client.Auth
+<h3>ثبت نام</h3>
+<EditForm Model="userInfo" OnValidSubmit="CreateUser">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="Email">آدرس ایمیل</label>
+        <InputText @bind-Value="@userInfo.Email" class="form-control" placeholder="آدرس ایمیل را وارد کنید" />
+        <ValidationMessage For="@(()=> userInfo.Email)" />
+    </div>
+    <div class="form-group">
+        <label for="Password">کلمه عبور</label>
+        <InputPassword @bind-Value="@userInfo.Password" class="form-control" placeholder="کلمه عبور را وارد کنید" />
+        <ValidationMessage For="@(()=> userInfo.Password)" />
+    </div>
+    <button type="submit" class="btn btn-primary">ثبت نام کاربر</button>
+</EditForm>
+@code {
+    private UserInfo userInfo = new UserInfo();
+    async Task CreateUser()
+    {
+        var result = await http.PostJsonAsync<UserToken>("api/accounts/create", userInfo);
+        await loginService.Login(result.Token);
+        navigationManager.NavigateTo("");
+    }
+}

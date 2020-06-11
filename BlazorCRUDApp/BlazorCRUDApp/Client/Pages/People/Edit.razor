@@ -1,0 +1,35 @@
+﻿@page "/people/edit/{personId:int}"
+@inject HttpClient http
+@inject NavigationManager nvgManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+
+<h3>ویرایش اطلاعات</h3>
+@if (person.Id == 0)
+{
+    <text>درحال بار گذاری...</text>
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
+else
+{
+    <PersonForm ButtonText="ویرایش اطلاعات" Person="person" OnValidSubmit="@EditPerson" />
+
+}
+
+@code {
+    [Parameter] public int personId { get; set; }
+    Person person = new Person();
+    protected async override Task OnParametersSetAsync()
+    {
+        person = await http.GetJsonAsync<Person>($"api/people/{personId}");
+    }
+    async Task EditPerson()
+    {
+        await http.PutJsonAsync("api/people", person);
+        nvgManager.NavigateTo("people");
+        await js.AlertMessage(SweetPosition.center, "اطلاعات با موفقیت ویرایش شد", 1500);
+    }
+}

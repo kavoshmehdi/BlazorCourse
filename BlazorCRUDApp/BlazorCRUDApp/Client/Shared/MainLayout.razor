@@ -1,0 +1,18 @@
+﻿@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+    @*<NewNaveMenu/>*@
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <AuthLinks/>
+        <a href="http://blazor.net" target="_blank" class="ml-md-auto">درباره</a>
+    </div>
+
+    <div class="content px-4">
+        @Body
+        <Footer/>
+    </div>
+</div>

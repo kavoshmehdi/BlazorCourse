@@ -1,0 +1,10 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <span>کاربر محترم @context.User.Identity.Name به سامانه خوش آمدید!</span>
+        <a href="Logout" class="nav-link btn btn-link">خروج</a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="Register">ثبت نام</a>
+        <a href="Login" class="nav-link btn btn-link">ورود</a>
+    </NotAuthorized>
+</AuthorizeView>

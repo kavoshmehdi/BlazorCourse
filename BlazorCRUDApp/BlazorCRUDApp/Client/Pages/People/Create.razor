@@ -1,0 +1,19 @@
+﻿@page "/people/create"
+@inject HttpClient http
+@inject NavigationManager nvgManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+
+<h3>ایجاد شخص جدید</h3>
+
+<PersonForm ButtonText="ایجاد شخص" Person="person" OnValidSubmit="@CreatePerson" />
+@code {
+    Person person = new Person();
+    async Task CreatePerson()
+    {
+        await http.PostJsonAsync("api/people", person);
+        nvgManager.NavigateTo("people");
+        await js.AlertMessage(SweetPosition.center, "اطلاعات جدید با موفقیت ثبت شد", 1500);
+    }
+}

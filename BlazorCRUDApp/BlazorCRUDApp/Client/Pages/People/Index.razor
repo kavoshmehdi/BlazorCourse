@@ -1,0 +1,102 @@
+﻿@page "/people"
+@inject HttpClient http
+@inject IJSRuntime js
+@using System.IO
+
+<h3>اشخاص</h3>
+<AuthorizeView>
+    <Authorized>
+        <div>
+            <a class="btn btn-success" href="people/create">شخص جدید</a>
+        </div>
+    </Authorized>
+</AuthorizeView>
+@if (people == null)
+{
+    <text>درحال بار گذاری...</text>
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
+else if (people.Length == 0)
+{
+    <text>هیچ رکوردی برای نمایش وجود ندارد.</text>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>کد</th>
+                <th>نام</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in people)
+            {
+                <tr>
+                    <td>@person.Id</td>
+                    <td>@person.Name</td>
+                    <td>
+                        <AuthorizeView>
+                            <Authorized>
+                                <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="ویرایش اطلاعات"
+                                   href="people/edit/@person.Id">ویرایش</a>
+                                @*<a class="fa fa-edit" style="color:green" href="people/edit/@person.Id"></a>*@
+                                <button class="btn btn-danger btn-sm" @onclick="@(()=>DeletePerson(person.Id))">حذف</button>
+                                @*<i class="fa fa-trash" style="color:red" @onclick="@(()=>DeletePerson(person.Id))"></i>*@
+                            </Authorized>
+                        </AuthorizeView>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button @onclick="ExportAsCSV">تبدیل به اکسل</button>
+}
+
+@code {
+
+    Person[] people { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPeople();
+    }
+    async Task LoadPeople()
+    {
+        people = await http.GetJsonAsync<Person[]>("api/people");
+        //people = new Person[]
+        //{
+        //    new Person(){Id=1,Name="Flipe"},
+        //    new Person(){Id=2,Name="Jessica"}
+        //};
+    }
+    async Task DeletePerson(int personId)
+    {
+        ////await js.DisplaeMessage("my title","My Message",SweetAlertMessageType.success);
+        var personSelected = people.First(x => x.Id == personId);
+        if (await js.Confirm("حذف", $"آیا برای حذف اطلاعات {personSelected.Name} اطمینان دارید؟", SweetAlertMessageType.question))
+        {
+            await http.DeleteAsync($"api/people/{personId}");
+            await LoadPeople();
+        }
+    }
+    private void ExportAsCSV()
+    {
+        using (var memoryStream = new MemoryStream())
+        {
+            using (var writer = new StreamWriter(memoryStream))
+            {
+                using (var csv = new CsvHelper.CsvWriter(writer))
+                {
+                    csv.WriteRecords(people);
+                }
+                var arr = memoryStream.ToArray();
+                js.SaveAs("people.csv", arr);
+            }
+
+        }
+    }
+}

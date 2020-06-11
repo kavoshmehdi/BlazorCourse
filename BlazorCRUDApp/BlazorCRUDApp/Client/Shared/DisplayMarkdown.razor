@@ -1,0 +1,20 @@
+﻿@using Markdig
+@if (string.IsNullOrEmpty(HTMLContent))
+{
+<text>درحال بار گذاری...</text>
+}
+else
+{
+    @((MarkupString)HTMLContent)
+}
+@code {
+    [Parameter] public string MarkdownContent { get; set; }
+    private string HTMLContent { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (MarkdownContent != null)
+        {
+            HTMLContent = Markdown.ToHtml(MarkdownContent);
+        }
+    }
+}
