@@ -10,3 +10,6 @@ function dotnetStaticInvokation() {
 function dotnetInstanceInvokation(dotnetHelper) {
     dotnetHelper.invokeMethodAsync("IncrementCount");
 }
+function setFocus(element) {
+    element.focus();
+}
