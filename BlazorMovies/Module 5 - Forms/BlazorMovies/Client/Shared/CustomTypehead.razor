@@ -13,50 +13,51 @@
                @onclick="@ShowSuggestions"
                @onfocusout="onfocusout" />
     </div>
-</div>
-@if (IsSearching)
-{
-    <div class="blazored-typeahead__results">
-        <div class="blazored-typeahead__result">
-            <span>Loading...</span>
-        </div>
-    </div>
-}
-else if (ShouldShowSuggestions())
-{
-<div class="blazored-typeahead__results">
-    @foreach (var item in Suggestions)
+    @if (IsSearching)
     {
-        <div @key="item" class="blazored-typeahead__result"
-             tabindex="0" @onclick="@(()=>SelectSuggestion(item))">
-            @ResultTemplate(item)
+        <div class="blazored-typeahead__results">
+            <div class="blazored-typeahead__result">
+                <span>Loading...</span>
+            </div>
+        </div>
+    }
+    else if (ShouldShowSuggestions())
+    {
+        <div class="blazored-typeahead__results">
+            @foreach (var item in Suggestions)
+            {
+                <div @key="item" class="blazored-typeahead__result"
+                     tabindex="0" @onclick="@(()=>SelectSuggestion(item))"
+                     @onmouseover="OnmouseoverSuggestion" @onmouseout="OnmouseoutSuggestion">
+                    @ResultTemplate(item)
+                </div>
+            }
+        </div>
+    }
+    else if (ShowNotFound())
+    {
+        <div class="blazored-typeahead__results">
+            @if (NotFoundTemplate != null)
+            {
+                <div class="blazored-typeahead__notfound">
+                    @NotFoundTemplate
+                </div>
+            }
+            else
+            {
+                <div class="blazored-typeahead__notfound">
+                    No Result Found
+                </div>
+            }
+
         </div>
     }
 </div>
-}
-else if (ShowNotFound())
-{
-    <div class="blazored-typeahead__results">
-        @if (NotFoundTemplate != null)
-        {
-            <div class="blazored-typeahead__notfound">
-                @NotFoundTemplate
-            </div>
-        }
-        else
-        {
-            <div class="blazored-typeahead__notfound">
-                No Result Found
-            </div>
-        }
-
-    </div>
-}
 @code {
     [Parameter] public string Placeholder { get; set; }
     [Parameter] public int MinimumLength { get; set; } = 3;
     [Parameter] public int Debounce { get; set; } = 300;
-    [Parameter] public Func<string,Task<IEnumerable<TItem>>> SearchMethod { get; set; }
+    [Parameter] public Func<string, Task<IEnumerable<TItem>>> SearchMethod { get; set; }
     [Parameter] public RenderFragment<TItem> ResultTemplate { get; set; }
     [Parameter] public RenderFragment NotFoundTemplate { get; set; }
     [Parameter] public EventCallback<TItem> ValueChanged { get; set; }
@@ -73,19 +74,22 @@ else if (ShowNotFound())
         _debounceTimer.Interval = Debounce;
         _debounceTimer.AutoReset = false;
         _debounceTimer.Elapsed += Search;
+
         base.OnInitialized();
     }
+
     private bool ShowNotFound()
     {
         return !Suggestions.Any() && IsShowingSuggestion;
     }
+
     private async Task SelectSuggestion(TItem item)
     {
         SearchText = "";
         await ValueChanged.InvokeAsync(item);
     }
 
-    protected async void Search(object source,ElapsedEventArgs e)
+    protected async void Search(object source, ElapsedEventArgs e)
     {
         IsSearching = true;
         IsShowingSuggestion = false;
@@ -97,6 +101,7 @@ else if (ShowNotFound())
         IsShowingSuggestion = true;
         await InvokeAsync(StateHasChanged);
     }
+
     private string SearchText
     {
         get => _searchText;
@@ -108,13 +113,20 @@ else if (ShowNotFound())
                 IsShowingSuggestion = false;
                 _debounceTimer.Stop();
                 Suggestions = new TItem[0];
-            }else if (value.Length >= MinimumLength)
+            }
+            else if (value.Length >= MinimumLength)
             {
                 _debounceTimer.Stop();
                 _debounceTimer.Start();
             }
         }
     }
+
+    private bool ShouldShowSuggestions()
+    {
+        return IsShowingSuggestion && Suggestions.Any();
+    }
+
     private void ShowSuggestions()
     {
         if (Suggestions.Any())
@@ -122,13 +134,24 @@ else if (ShowNotFound())
             IsShowingSuggestion = true;
         }
     }
+
     private void onfocusout()
     {
-        IsShowingSuggestion = true;
+        if (!IsMouseInSuggestion)
+        {
+            IsShowingSuggestion = false;
+        }
 
     }
-    private bool ShouldShowSuggestions()
+
+    bool IsMouseInSuggestion = false;
+    
+    private void OnmouseoverSuggestion()
     {
-        return IsShowingSuggestion && Suggestions.Any();
+        IsMouseInSuggestion = true;
+    }
+    private void OnmouseoutSuggestion()
+    {
+        IsMouseInSuggestion = false;
     }
 }
